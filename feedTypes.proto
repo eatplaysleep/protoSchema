@@ -12,7 +12,7 @@ message FeedSubscriptions {
 
 message FeedSubscription {
   // Usage: "Object" containing the details of a subscription.
-  uint64 id = 1 [
+  uint64 message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"feed-subscription\")"
   ];
   string userId = 2 [
@@ -41,7 +41,7 @@ message FeedItem {
 // "This Influencer's follower count [increased/decreased] by more than x%
 // from [startDate] to [endDate]."
 message FollowerAlert {
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"follower-alert\")"
   ];
   // This is the percentage of change in followers from the date indicated
@@ -78,10 +78,10 @@ message FollowerAlert {
 // A post contains the minimum details necessary to retrieve the actual
 // post from Social Hoarder.
 message Post {
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"post\")"
   ];
-  // This is the ID needed to retrieve the details of a post from Social Hoarder.
+  // This is the message_type_id needed to retrieve the details of a post from Social Hoarder.
   string xRef = 2 [
     (tin.field_validation) = "required"
   ];

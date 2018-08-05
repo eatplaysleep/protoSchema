@@ -6,7 +6,7 @@ package searchTypes;
 
 message SearchQueryResult {
   // Usage: Contains the results of a search.
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"search-query-result\")"
   ];
   string xRef = 2 [

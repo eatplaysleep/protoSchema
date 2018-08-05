@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package emailTypes;
+
+// Types: The following messages are used within other messages.
+
+message EmailSubscription {
+  // Usage: "Object" containing the details of a subscription.
+  uint64 message_type_id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"email-subscription\")"
+  ];
+  string userId = 2 [
+    (tin.field_validation) = "required"
+  ];
+  string xref = 3 [
+    (tin.field_validation) = "required"
+  ];
+  // Indicates if a user has opted out/unsubscribed to the email.
+  // Data may not initially be available as it resides in MailGun.
+  bool unsubscribed = 4 [
+    (tin.field_validation) = "required"
+  ];
+  // Indicates if a user has disabled/muted a particular email.
+  // Differs from "deleting" as a user may choose to re-enable.
+  bool disabled = 5 [
+    (tin.field_validation) = "required"
+  ];
+}

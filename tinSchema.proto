@@ -6,6 +6,8 @@ import "notifyTypes.proto";
 import "feedTypes.proto";
 import "searchTypes.proto";
 
+// TODO message_type_id = message_type_id
+
 // Generic Types: The following messages are used within other messages.
 
 message IsAliveResult {
@@ -41,10 +43,10 @@ message FeedQuery {
   //           a list of all feed items.
   // Consumes: The Notify service.
   // Results:  FeedQueryReply
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"feed-query\")"
   ];
-  string xRef = 2 [
+  string xref = 2 [
     (tin.field_validation) = "required"
   ];
   int32 pid = 3 [
@@ -60,10 +62,10 @@ message FeedQueryReply {
   // Consumes: Any service interested in a listing of feed
   //           results.
   // Results:  n/a
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"feed-query-reply\")"
   ];
-  string xRef = 2 [
+  string xref = 2 [
     (tin.field_validation) = "required"
   ];
   oneof result {
@@ -90,10 +92,10 @@ message NotifySend {
   // Consumes: Any service responsible for sending a notification.
   //           i.e. Email, SMS, APN
   // Results:  n/a
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"notify-send\")"
   ];
-  string xRef = 2 [
+  string xref = 2 [
     (tin.field_validation) = "required"
   ];
   int32 pid = 3 [
@@ -112,10 +114,10 @@ message NotifyQuery {
   //           a list of all notification subscriptions.
   // Consumes: The Notify service.
   // Results:  NotifyQueryReply
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"notify-query\")"
   ];
-  string xRef = 2 [
+  string xref = 2 [
     (tin.field_validation) = "required"
   ];
   int32 pid = 3 [
@@ -131,10 +133,10 @@ message NotifyQueryReply {
   // Consumes: Any service interested in a listing of notification
   //           subscriptions.
   // Results:  n/a
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"notify-query-reply\")"
   ];
-  string xRef = 2 [
+  string xref = 2 [
     (tin.field_validation) = "required"
   ];
   oneof result {
@@ -149,10 +151,10 @@ message SearchQueryRun {
   // Produced: When a user or service requests to run a search.
   // Consumes: The Search service in order to run a search against ES.
   // Result:   SearchQueryRunReply
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"search-query-run\")"
   ];
-  string xRef = 2 [
+  string xref = 2 [
     (tin.field_validation) = "required"
   ];
   int32 pid = 3 [
@@ -180,12 +182,8 @@ message SearchQuerySave {
   //           For example, the Notify and Feed service both create subscriptions
   //           when this message is produced and meets certain criteria.
   // Result:   Simple receipt acknowledgment.
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"search-query-save\")"
-  ];
-// TODO is this needed?
-  string messageId = 2 [
-    (tin.field_validation) = "required |> matchRegex(\"^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\")"
   ];
   // feedVisible indicates whether something should be shown in the feed or not.
   // This boolean is what separates a Social Tracker "query" from a
@@ -194,7 +192,7 @@ message SearchQuerySave {
   bool feedVisible = 3 [
     (tin.field_validation) = "required"
   ];
-  string xRef = 4 [
+  string xref = 4 [
     (tin.field_validation) = "required"
   ];
   // TODO: Merge from godsearch.proto
@@ -231,14 +229,14 @@ message SearchQueryResultChange {
   //           original baseline.
   // Consumes: Any service interested in acting on a result change.
   // Result:   n/a
-  string id = 1 [
+  string message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"search-query-result-change\")"
   ];
   // TODO merge normlaized from godsearch.proto
   godsearch.GodSearchReply results = 3 [
     (tin.field_validation) = "required"
   ];
-  string xRef = 4 [
+  string xref = 4 [
     (tin.field_validation) = "required"
   ];
 };

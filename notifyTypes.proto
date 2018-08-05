@@ -20,7 +20,7 @@ message NotifySubscription {
 
 message ContentSubscription {
   // Usage: "Object" containing the details of a subscription.
-  uint64 id = 1 [
+  uint64 message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"content-subscription\")"
   ];
   string userId = 2 [
@@ -39,7 +39,7 @@ message ContentSubscription {
 
 message FollowerSubscription {
   // Usage: "Object" containing the details of a subscription.
-  uint64 id = 1 [
+  uint64 message_type_id = 1 [
     (tin.field_validation) = "required |> isEqualString(\"follower-subscription\")"
   ];
   string userId = 2 [
