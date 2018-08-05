@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package searchTypes;
+
+// Types: The following messages are used within other messages.
+
+message SearchQueryResult {
+  // Usage: Contains the results of a search.
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"search-query-result\")"
+  ];
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  // TODO merge from godsearch.proto
+  godsearch.GodSearchReply results = 3 [
+    (tin.field_validation) = "required"
+  ];
+  int32 pid = 4 [
+    (tin.field_validation) = "required"
+  ];
+};

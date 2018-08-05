@@ -1,0 +1,253 @@
+syntax = "proto3";
+
+import "tin.proto";
+import "godsearch.proto";
+import "notifyTypes.proto";
+import "feedTypes.proto";
+import "searchTypes.proto";
+
+// Generic Types: The following messages are used within other messages.
+
+message IsAliveResult {
+  string message = 1;
+}
+
+// Email Messages
+
+message EmailSubscribed {
+  // Produced: Upon successful saving of an email subscription.
+  // Consumes: Any service interested in whether a subscription saved.
+  // Restult:  n/a
+  EmailSubscription EmailSubscription = 1 [
+    (tin.field_validation) = "required"
+  ];
+  string error = 2;
+}
+
+// Feed Messages
+
+message FeedSubscribed {
+  // Produced: Upon successful saving of a feed subscription.
+  // Consumes: Any service interested in whether a subscription saved.
+  // Restuls in... n/a
+  feedTypes.FeedSubscription FeedSubscription = 1 [
+    (tin.field_validation) = "required"
+  ];
+  string error = 2;
+}
+
+message FeedQuery {
+  // Produced: When a service/application needs to retrieve
+  //           a list of all feed items.
+  // Consumes: The Notify service.
+  // Results:  FeedQueryReply
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"feed-query\")"
+  ];
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  int32 pid = 3 [
+    (tin.field_validation) = "required"
+  ];
+  string userId = 4 [
+    (tin.field_validation) = "required"
+  ];
+}
+
+message FeedQueryReply {
+  // Produced: Response to FeedQuery.
+  // Consumes: Any service interested in a listing of feed
+  //           results.
+  // Results:  n/a
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"feed-query-reply\")"
+  ];
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  oneof result {
+    feedTypes.FeedItems FeedItems = 3 ;
+    string error = 4;
+  }
+}
+
+// Notify Messages
+
+message NotifySubscribed {
+  // Produced: Upon successful saving of a notification subscription.
+  // Consumes: Any service interested in whether a subscription saved.
+  // Restuls in... n/a
+  notifyTypes.NotifySubscription NotifySubscription = 1 [
+    (tin.field_validation) = "required"
+  ];
+  string error = 2;
+}
+
+message NotifySend {
+  // Produced: When the Notify service identifies a notification
+  //           should be sent based on a subscription.
+  // Consumes: Any service responsible for sending a notification.
+  //           i.e. Email, SMS, APN
+  // Results:  n/a
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"notify-send\")"
+  ];
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  int32 pid = 3 [
+    (tin.field_validation) = "required"
+  ];
+  notifyTypes.NotifySubscription notification = 4 [
+    (tin.field_validation) = "required"
+  ];
+  // TODO merge normlaized from godsearch.proto
+  godsearch.GodSearchReply results = 5;
+  ];
+}
+
+message NotifyQuery {
+  // Produced: When a service/application needs to retrieve
+  //           a list of all notification subscriptions.
+  // Consumes: The Notify service.
+  // Results:  NotifyQueryReply
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"notify-query\")"
+  ];
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  int32 pid = 3 [
+    (tin.field_validation) = "required"
+  ];
+  string userId = 4 [
+    (tin.field_validation) = "required"
+  ];
+}
+
+message NotifyQueryReply {
+  // Produced: Response to NotifyQuery.
+  // Consumes: Any service interested in a listing of notification
+  //           subscriptions.
+  // Results:  n/a
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"notify-query-reply\")"
+  ];
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  oneof result {
+    notifyTypes.NotifySubscriptions notifySubscriptions = 3 ;
+    string error = 4;
+  }
+}
+
+// Search Messages
+
+message SearchQueryRun {
+  // Produced: When a user or service requests to run a search.
+  // Consumes: The Search service in order to run a search against ES.
+  // Result:   SearchQueryRunReply
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"search-query-run\")"
+  ];
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  int32 pid = 3 [
+    (tin.field_validation) = "required"
+  ];
+  godsearch.GodSearchRequest query = 4 [
+    (tin.field_validation) = "required"
+  ];
+};
+
+message SearchQueryRunReply {
+  oneof result {
+    searchTypes.SearchQueryResult searchQueryResult = 1;
+    string error = 2;
+  }
+}
+
+// Sentinel Messages
+
+message SearchQuerySave {
+  // Produced: When a user saves a search/query.
+  //           This can include creating a custom alert "notification"
+  //           or simply saving a content or influencer search.
+  // Consumes: Any service that needs to "do" something when a query is saved.
+  //           For example, the Notify and Feed service both create subscriptions
+  //           when this message is produced and meets certain criteria.
+  // Result:   Simple receipt acknowledgment.
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"search-query-save\")"
+  ];
+// TODO is this needed?
+  string messageId = 2 [
+    (tin.field_validation) = "required |> matchRegex(\"^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$\")"
+  ];
+  // feedVisible indicates whether something should be shown in the feed or not.
+  // This boolean is what separates a Social Tracker "query" from a
+  // a generic query used on the search page. A query saved without
+  // feedVisible = true is the same as just a saved search.
+  bool feedVisible = 3 [
+    (tin.field_validation) = "required"
+  ];
+  string xRef = 4 [
+    (tin.field_validation) = "required"
+  ];
+  // TODO: Merge from godsearch.proto
+  godsearch.GodSearchRequest query = 5 [
+    (tin.field_validation) = "required"
+  ];
+  string userId = 6 [
+    (tin.field_validation) = "required"
+  ];
+  // The label provides the name/descriptor used in the UI for the
+  // given query. Also forwarded and used by Notify/Feed/Email.
+  string label = 7 [
+    (tin.field_validation) = "required"
+  ];
+};
+
+message SearchQuerySaved {
+  // Produced: Upon successful saving of a search query.
+  // Consumes: The service(s) that produced the original SearchQuerySave.
+  // Results in... n/a
+  // SearchQueryResult provides the result of the query and is essentially the baseline.
+  searchTypes.SearchQueryResult searchQueryResult = 1;
+  // Provides the saved notification subscription.
+  notifyTypes.NotifySubscribed notifySubscribed = 2;
+  // Provides the saved feed subscription.
+  feedTypes.FeedSubscribed FeedSubscribed = 3;
+  // Provides the saved email subscription.
+  emailTypes.EmailSubscribed EmailSubscribed = 4;
+  string error = 5;
+}
+
+message SearchQueryResultChange {
+  // Produced: When Sentinel detects a change in results from the
+  //           original baseline.
+  // Consumes: Any service interested in acting on a result change.
+  // Result:   n/a
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"search-query-result-change\")"
+  ];
+  // TODO merge normlaized from godsearch.proto
+  godsearch.GodSearchReply results = 3 [
+    (tin.field_validation) = "required"
+  ];
+  string xRef = 4 [
+    (tin.field_validation) = "required"
+  ];
+};
+
+// System Messages
+
+message IsAliveReply {
+  oneof result {
+    IsAliveResult isAlive = 1;
+    string error = 2;
+  }
+}

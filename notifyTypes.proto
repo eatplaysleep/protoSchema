@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package notifyTypes;
+
+// Types: The following messages are used within other messages.
+
+message NotifySubscriptions {
+  // Usage: "Array" containing all of the notifications
+  //        for a given userId.
+  repeated NotifySubscription notifySubscription = 1;
+}
+
+message NotifySubscription {
+  // Usage: A single subscription of a particular type.
+  oneof subscription {
+    ContentSubscription contentSubscription = 1;
+    FollowerSubscription followerSubscription = 2;
+  }
+}
+
+message ContentSubscription {
+  // Usage: "Object" containing the details of a subscription.
+  uint64 id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"content-subscription\")"
+  ];
+  string userId = 2 [
+    (tin.field_validation) = "required"
+  ];
+  string xref = 3 [
+    (tin.field_validation) = "required"
+  ];
+  bool muted = 4 [
+    (tin.field_validation) = "required"
+  ];
+  string label = 5 [
+    (tin.field_validation) = "required |> trimString |> nonEmptyString"
+  ];
+}
+
+message FollowerSubscription {
+  // Usage: "Object" containing the details of a subscription.
+  uint64 id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"follower-subscription\")"
+  ];
+  string userId = 2 [
+    (tin.field_validation) = "required"
+  ];
+  string xref = 3 [
+    (tin.field_validation) = "required"
+  ];
+  bool muted = 4 [
+    (tin.field_validation) = "required"
+  ];
+  string label = 5 [
+    (tin.field_validation) = "required |> trimString |> nonEmptyString"
+  ];
+  uint32 minimumFollowerCount = 6 [
+    (tin.field_validation) = "required"
+  ];
+  enum Direction {
+    INCREASING = 0;
+    DECREASING = 1;
+  }
+  Direction direction = 7 [
+    (tin.field_validation) = "required"
+  ];
+  uint32 threshold = 8 [
+    (tin.field_validation) = "required"
+  ];
+}

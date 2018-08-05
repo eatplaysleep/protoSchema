@@ -1,0 +1,230 @@
+syntax = "proto3";
+
+package godsearch;
+
+service GodSearch {
+  rpc GodSearch (GodSearchRequest) returns (GodSearchReply) {}
+}
+enum Network {
+  facebook  = 0;
+  instagram = 1;
+  snapchat  = 2;
+  youtube   = 4;
+  twitter   = 5;
+}
+enum Gender {
+  gender_male   = 0;
+  gender_female = 1;
+  gender_other  = 2;
+}
+enum Sex {
+  sex_male = 0;
+  sex_female = 1;
+}
+enum WatsonPiPersonalityTrait {
+  pos_big5_openness = 0;
+  pos_big5_conscientiousness = 1;
+  pos_big5_extraversion = 2;
+  pos_big5_agreeableness = 3;
+  pos_big5_neuroticism = 4;
+  pos_personality_adventurousness = 5;
+  pos_personality_artistic_interests = 6;
+  pos_personality_emotionality = 7;
+  pos_personality_imagination = 8;
+  pos_personality_intellect = 9;
+  pos_personality_liberalism = 10;
+  pos_personality_achievement_striving = 11;
+  pos_personality_cautiousness = 12;
+  pos_personality_dutifulness = 13;
+  pos_personality_orderliness = 14;
+  pos_personality_self_discipline = 15;
+  pos_personality_self_efficacy = 16;
+  pos_personality_activity_level = 17;
+  pos_personality_assertiveness = 18;
+  pos_personality_cheerfulness = 19;
+  pos_personality_excitement_seeking = 20;
+  pos_personality_friendliness = 21;
+  pos_personality_gregariousness = 22;
+  pos_personality_altruism = 23;
+  pos_personality_cooperation = 24;
+  pos_personality_modesty = 25;
+  pos_personality_morality = 26;
+  pos_personality_sympathy = 27;
+  pos_personality_trust = 28;
+  pos_personality_anger = 29;
+  pos_personality_anxiety = 30;
+  pos_personality_depression = 31;
+  pos_personality_immoderation = 32;
+  pos_personality_self_consciousness = 33;
+  pos_personality_vulnerability = 34;
+  pos_needs_challenge = 35;
+  pos_needs_closeness = 36;
+  pos_needs_curiosity = 37;
+  pos_needs_excitement = 38;
+  pos_needs_harmony = 39;
+  pos_needs_ideal = 40;
+  pos_needs_liberty = 41;
+  pos_needs_love = 42;
+  pos_needs_practicality = 43;
+  pos_needs_self_expression = 44;
+  pos_needs_stability = 45;
+  pos_needs_structure = 46;
+  pos_values_conservation = 47;
+  pos_values_openness_to_change = 48;
+  pos_values_hedonism = 49;
+  pos_values_self_enhancement = 50;
+  pos_values_self_transcendence = 51;
+  neg_big5_openness = 52;
+  neg_big5_conscientiousness = 53;
+  neg_big5_extraversion = 54;
+  neg_big5_agreeableness = 55;
+  neg_big5_neuroticism = 56;
+  neg_personality_adventurousness = 57;
+  neg_personality_artistic_interests = 58;
+  neg_personality_emotionality = 59;
+  neg_personality_imagination = 60;
+  neg_personality_intellect = 61;
+  neg_personality_liberalism = 62;
+  neg_personality_achievement_striving = 63;
+  neg_personality_cautiousness = 64;
+  neg_personality_dutifulness = 65;
+  neg_personality_orderliness = 66;
+  neg_personality_self_discipline = 67;
+  neg_personality_self_efficacy = 68;
+  neg_personality_activity_level = 69;
+  neg_personality_assertiveness = 70;
+  neg_personality_cheerfulness = 71;
+  neg_personality_excitement_seeking = 72;
+  neg_personality_friendliness = 73;
+  neg_personality_gregariousness = 74;
+  neg_personality_altruism = 75;
+  neg_personality_cooperation = 76;
+  neg_personality_modesty = 77;
+  neg_personality_morality = 78;
+  neg_personality_sympathy = 79;
+  neg_personality_trust = 80;
+  neg_personality_anger = 81;
+  neg_personality_anxiety = 82;
+  neg_personality_depression = 83;
+  neg_personality_immoderation = 84;
+  neg_personality_self_consciousness = 85;
+  neg_personality_vulnerability = 86;
+  neg_needs_challenge = 87;
+  neg_needs_closeness = 88;
+  neg_needs_curiosity = 89;
+  neg_needs_excitement = 90;
+  neg_needs_harmony = 91;
+  neg_needs_ideal = 92;
+  neg_needs_liberty = 93;
+  neg_needs_love = 94;
+  neg_needs_practicality = 95;
+  neg_needs_self_expression = 96;
+  neg_needs_stability = 97;
+  neg_needs_structure = 98;
+  neg_values_conservation = 99;
+  neg_values_openness_to_change = 100;
+  neg_values_hedonism = 101;
+  neg_values_self_enhancement = 102;
+  neg_values_self_transcendence = 103;
+}
+enum SortMode {
+  inDemo = 0;
+  engagementRateAbs = 1;
+  engagementRatePerNetwork = 2;
+  followerCount = 3;
+  pubTime = 4;
+  cippusTextBm25 = 5;
+  cippusMatchCount = 6;
+}
+message DPGroup {
+  repeated string codes = 1;
+}
+message Keywords {
+  repeated string keywords = 1;
+}
+/* These have weird numbers so they match what's in ip_dashboard.race_type but it doesn't really matter */
+enum InfluencerEthnicity {
+  unused = 0;
+  black = 1;
+  latino = 2;
+  asian = 3;
+  caucasian = 4;
+  native_american = 5;
+  other = 7;
+}
+message Geolocation {
+  float lat = 1;
+  float lon = 2;
+}
+message GodSearchRequest {
+  repeated Network socialNetworks = 1;
+  repeated Gender influencerGenders = 2;
+  uint32 influencerMinAge = 3;
+  uint32 influencerMaxAge = 4;
+  uint64 minFollowers = 5;
+  uint64 maxFollowers = 6;
+  uint32 minPrice = 7;
+  uint32 maxPrice = 8;
+  repeated string influencerLanguages = 9; // TODO enum?
+  repeated InfluencerEthnicity influencerEthnicities = 10;
+  double socialAccountMinEngagementRate = 11;
+  repeated string influencerVerticals = 12;
+  repeated WatsonPiPersonalityTrait socialAccountPersonalityTraits = 13;
+  uint32 profanityLevel = 14;
+  bool contactRequired = 15;
+  Sex audienceGender = 16;
+  uint32 audienceMinAge = 17;
+  uint32 audienceMaxAge = 18;
+  /* use this field for things like income, family, occupations,
+   * affinities, religions.  one hit per group is required for a result to
+   * be considered valid.
+   */
+  repeated DPGroup audienceDemographics = 19;
+  repeated string requiredContentKeywords = 20;
+  repeated string excludedContentKeywords = 21;
+  /* similarly to audienceDemographics, one hit per group is requierd for a
+   * result to be considered valid.
+   */
+  repeated Keywords optionalContentKeywords = 22;
+  repeated string imageTags = 23;
+  /* milliseconds since epoch */
+  uint64 minPostedTime = 24;
+  uint64 maxPostedTime = 25;
+  float minPostEngagementRate = 26;
+  bool postSponsored = 27;
+  bool containsMedia = 28;
+  SortMode sortMode = 29;
+  bool sortModeAscending = 30;
+  repeated uint64 socialAccountIds = 31;
+  repeated string foreignUsernames = 32;
+  string fullName = 33;
+  repeated Geolocation influencerLocations = 34;
+  repeated Geolocation cippusLocations = 35;
+  /* filter social accounts by customers who have access to them */
+  repeated uint64 customerAccess = 36;
+
+/*
+influencerLocations: [LocationInput!]!
+audienceLocation: [String!]!
+geoTag: [LocationInput!]!
+*/
+}
+message Error {
+  string message = 1;
+}
+message SocialAccountResults {
+  repeated uint64 socialAccountIds = 1;
+}
+message CippusResults {
+  /* Note: The current social-hoarder/cippus mapping does not seem to have an
+   * internal cippus ID. foreign post id seems to be the best we get for now
+   */
+  repeated string foreignPostIds = 1;
+}
+message GodSearchReply {
+  oneof results {
+    SocialAccountResults socialAccountResults = 1;
+    CippusResults cippusResults = 2;
+    Error error = 3;
+  }
+}

@@ -1,0 +1,101 @@
+syntax = "proto3";
+
+package feedTypes;
+
+// Types: The following messages are used within other messages.
+
+message FeedSubscriptions {
+  // Usage: "Object" containing all of the feed subscriptions
+  //        for a given userId.
+  repeated FeedSubscription feedSubscription = 1;
+}
+
+message FeedSubscription {
+  // Usage: "Object" containing the details of a subscription.
+  uint64 id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"feed-subscription\")"
+  ];
+  string userId = 2 [
+    (tin.field_validation) = "required"
+  ];
+  string xref = 3 [
+    (tin.field_validation) = "required"
+  ];
+}
+
+message FeedItems {
+  // Usage: "Array" containing all the items to be presented
+  //        in a user's feed.
+  repeated FeedItem feedItem = 1;
+}
+
+message FeedItem {
+  // Usage: "Object" containing the details of a single feed item.
+  oneof feedItem {
+    Post post = 1;
+    FollowerAlert followerAlert = 2;
+  }
+}
+
+// Follower alerts are presented to users in their feed. An example would read:
+// "This Influencer's follower count [increased/decreased] by more than x%
+// from [startDate] to [endDate]."
+message FollowerAlert {
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"follower-alert\")"
+  ];
+  // This is the percentage of change in followers from the date indicated
+  // in the `startDate` until the time indicated in the `endDate`.
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  int32 pid = 3 [
+    (tin.field_validation) = "required"
+  ];
+  string userId = 4 [
+    (tin.field_validation) = "required"
+  ];
+  uint32 percentChange = 5 [
+    (tin.field_validation) = "required"
+  ];
+  // The actual follower count change.
+  uint32 countChange = 6 [
+    (tin.field_validation) = "required"
+  ];
+  // The beginning date/baseline the change is calculated against.
+  string startDate = 7;
+  // The ending date the change is calculated against.
+  string endDate = 8;
+  enum Direction {
+    INCREASING = 0;
+    DECREASING = 1;
+  }
+  Direction changeDirection = 9 [
+    (tin.field_validation) = "required"
+  ];
+}
+
+// A post contains the minimum details necessary to retrieve the actual
+// post from Social Hoarder.
+message Post {
+  string id = 1 [
+    (tin.field_validation) = "required |> isEqualString(\"post\")"
+  ];
+  // This is the ID needed to retrieve the details of a post from Social Hoarder.
+  string xRef = 2 [
+    (tin.field_validation) = "required"
+  ];
+  int32 pid = 3 [
+    (tin.field_validation) = "required"
+  ];
+  string userId = 4 [
+    (tin.field_validation) = "required"
+  ];
+  string postId = 5;
+  // resultTime is the time in which a result generated an "alert". This is indicated
+  // in the UI so users know how recent a feed item is in their view.
+  string resultTime = 6;
+  // readTime is the time in which a user first views the item in their feed.
+  // Value should initially be empty/null but later updated.
+  string readTime = 7;
+}
